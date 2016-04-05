@@ -2,9 +2,10 @@
  * Created by azhar on 31/03/16.
  */
 
-import { pushPath }  from 'redux-simple-router';
+import { pushPath }  from 'react-router-redux';
 import Constants     from '../constants';
 import { httpPost }  from '../utils';
+import {setCurrentUser}   from './sessions';
 
 const Actions = {};
 
@@ -14,10 +15,7 @@ Actions.signUp = (data) => {
       .then((data) => {
         localStorage.setItem('phoenixAuthToken', data.jwt);
 
-        dispatch({
-          type: Constants.CURRENT_USER,
-          currentUser: data.user,
-        });
+        setCurrentUser(dispatch, data.user);
 
         dispatch(pushPath('/'));
       })

@@ -2,45 +2,36 @@
  * Created by azhar on 05/04/16.
  */
 
+import Constants              from '../constants';
+import { push }               from 'react-router-redux';
+import { httpGet, httpPost }  from '../utils';
+import CurrentBoardActions    from './current_board';
 
-import { IndexRoute, Route }        from 'react-router';
-import React                        from 'react';
-import MainLayout                   from '../layouts/main';
-import AuthenticatedContainer       from '../containers/authenticated';
-import HomeIndexView                from '../views/home';
-import RegistrationsNew             from '../views/registrations/new';
-import SessionsNew                  from '../views/sessions/new';
-import BoardsShowView               from '../views/boards/show';
-import CardsShowView                from '../views/cards/show';
-import Actions                      from '../actions/sessions';
+const Actions = {
+  showBoards: (show) => {
+    return dispatch => {
+      dispatch({
+        type: Constants.HEADER_SHOW_BOARDS,
+        show: show,
+      });
+    };
+  },
 
-export default function configRoutes(store) {
-  const _ensureAuthenticated = (nextState, replace, callback) => {
-    const { dispatch } = store;
-    const { session } = store.getState();
-    const { currentUser } = session;
+  visitBoard: (socket, channel, boardId) => {
+    return dispatch => {
+      if (channel) {
+        dispatch(CurrentBoardActions.leaveChannel(channel));
+        dispatch(CurrentBoardActions.connectToChannel(socket, boardId));
+      }
 
-    if (!currentUser && localStorage.getItem('phoenixAuthToken')) {
-      dispatch(Actions.currentUser());
-    } else if (!localStorage.getItem('phoenixAuthToken')) {
-      replace('/sign_in');
-    }
+      dispatch(push(`/boards/${boardId}`));
 
-    callback();
-  };
+      dispatch({
+        type: Constants.HEADER_SHOW_BOARDS,
+        show: false,
+      });
+    };
+  },
+};
 
-  return (
-    <Route component={MainLayout}>
-      <Route path="/sign_up" component={RegistrationsNew} />
-      <Route path="/sign_in" component={SessionsNew} />
-
-      <Route path="/" component={AuthenticatedContainer} onEnter={_ensureAuthenticated}>
-        <IndexRoute component={HomeIndexView} />
-
-        <Route path="/boards/:id" component={BoardsShowView}>
-          <Route path="cards/:id" component={CardsShowView}/>
-        </Route>
-      </Route>
-    </Route>
-  );
-}
+export default Actions;
