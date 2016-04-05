@@ -1,4 +1,4 @@
-defmodule PhoenixTrello.RegisterationController do
+defmodule PhoenixTrello.RegistrationController do
   use PhoenixTrello.Web, :controller
 
   alias PhoenixTrello.Repo
