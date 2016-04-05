@@ -48,5 +48,5 @@ defmodule PhoenixTrello.UserSocket do
   #     PhoenixTrello.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(socket), do: "users_socket:#{socket.assigns.current_user_id}"
+  def id(socket), do: "users_socket:#{socket.assigns.current_user.id}"
 end
