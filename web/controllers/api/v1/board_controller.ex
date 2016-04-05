@@ -2,9 +2,9 @@ defmodule PhoenixTrello.BoardController do
   use PhoenixTrello.Web, :controller
 
   plug Guardian.Plug.EnsureAuthenticated, handler: PhoenixTrello.SessionController
+  plug :scrub_params, "board" when action in [:create]
 
-  alias PhoenixTrello.Repo
-  alias PhoenixTrello.Board
+  alias PhoenixTrello.{Repo, Board, UserBoard}
 
   def index(conn, _params) do
     current_user = Guardian.Plug.current_resource(conn)
@@ -14,7 +14,13 @@ defmodule PhoenixTrello.BoardController do
       |> Board.preload_all
       |> Repo.all
 
-    render(conn, "index.json", owned_boards: owned_boards)
+    invited_boards = current_user
+      |> assoc(:boards)
+      |> Board.not_owned_by(current_user.id)
+      |> Board.preload_all
+      |> Repo.all
+
+    render(conn, "index.json", owned_boards: owned_boards, invited_boards: invited_boards)
   end
 
   def create(conn, %{"board" => board_params}) do
