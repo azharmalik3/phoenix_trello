@@ -1,8 +1,7 @@
 defmodule PhoenixTrello.UserSocket do
   use Phoenix.Socket
 
-  alias PhoenixTrello.Repo
-  alias PhoenixTrello.User
+  alias PhoenixTrello.{Repo, User, GuardianSerializer}
 
   ## Channels
   channel "users:*", PhoenixTrello.UserChannel
