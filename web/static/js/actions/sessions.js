@@ -1,5 +1,5 @@
 /**
- * Created by azhar on 01/04/16.
+ * Created by azhar on 05/04/16.
  */
 
 import { push }                           from 'react-router-redux';
@@ -30,9 +30,9 @@ export function setCurrentUser(dispatch, user) {
 
   channel.on('boards:add', (msg) => {
     dispatch({
-      type: Constants.BOARDS_ADDED,
-      board: msg.board,
-    });
+        type: Constants.BOARDS_ADDED,
+        board: msg.board,
+      });
   });
 };
 
@@ -47,20 +47,20 @@ const Actions = {
       };
 
       httpPost('/api/v1/sessions', data)
-        .then((data) => {
-          localStorage.setItem('phoenixAuthToken', data.jwt);
-          setCurrentUser(dispatch, data.user);
-          dispatch(push('/'));
-        })
-        .catch((error) => {
-          error.response.json()
-            .then((errorJSON) => {
-              dispatch({
-                type: Constants.SESSIONS_ERROR,
-                error: errorJSON.error,
-              });
-            });
+      .then((data) => {
+        localStorage.setItem('phoenixAuthToken', data.jwt);
+        setCurrentUser(dispatch, data.user);
+        dispatch(push('/'));
+      })
+      .catch((error) => {
+        error.response.json()
+        .then((errorJSON) => {
+          dispatch({
+            type: Constants.SESSIONS_ERROR,
+            error: errorJSON.error,
+          });
         });
+      });
     };
   },
 
@@ -69,31 +69,31 @@ const Actions = {
       const authToken = localStorage.getItem('phoenixAuthToken');
 
       httpGet('/api/v1/current_user')
-        .then(function (data) {
-          setCurrentUser(dispatch, data);
-        })
-        .catch(function (error) {
-          console.log(error);
-          dispatch(push('/sign_in'));
-        });
+      .then(function (data) {
+        setCurrentUser(dispatch, data);
+      })
+      .catch(function (error) {
+        console.log(error);
+        dispatch(push('/sign_in'));
+      });
     };
   },
 
   signOut: () => {
     return dispatch => {
       httpDelete('/api/v1/sessions')
-        .then((data) => {
-          localStorage.removeItem('phoenixAuthToken');
+      .then((data) => {
+        localStorage.removeItem('phoenixAuthToken');
 
-          dispatch({ type: Constants.USER_SIGNED_OUT, });
+        dispatch({ type: Constants.USER_SIGNED_OUT, });
 
-          dispatch(push('/sign_in'));
+        dispatch(push('/sign_in'));
 
-          dispatch({ type: Constants.BOARDS_FULL_RESET });
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+        dispatch({ type: Constants.BOARDS_FULL_RESET });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     };
   },
 };

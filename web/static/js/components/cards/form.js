@@ -1,5 +1,5 @@
 /**
- * Created by azhar on 04/04/16.
+ * Created by azhar on 05/04/16.
  */
 
 import React, { PropTypes } from 'react';
@@ -22,6 +22,22 @@ export default class CardForm extends React.Component {
     this.props.onSubmit();
   }
 
+  _renderErrors(field) {
+    const { errors } = this.props;
+
+    if (!errors) return false;
+
+    return errors.map((error, i) => {
+      if (error[field]) {
+        return (
+          <div key={i} className="error">
+            {error[field]}
+          </div>
+        );
+      }
+    });
+  }
+
   componentDidMount() {
     this.refs.name.focus();
   }
@@ -38,6 +54,7 @@ export default class CardForm extends React.Component {
         <div className="card form">
           <form id="new_card_form" onSubmit={::this._handleSubmit}>
             <textarea ref="name" id="card_name" type="text" required="true" rows={5}/>
+            {::this._renderErrors('name')}
             <button type="submit">Add</button> or <a href="#" onClick={::this._handleCancelClick}>cancel</a>
           </form>
         </div>
@@ -45,3 +62,6 @@ export default class CardForm extends React.Component {
     );
   }
 }
+
+CardForm.propTypes = {
+};

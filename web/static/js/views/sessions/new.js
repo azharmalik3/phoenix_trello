@@ -1,5 +1,5 @@
 /**
- * Created by azhar on 01/04/16.
+ * Created by azhar on 05/04/16.
  */
 
 import React, {PropTypes}   from 'react';
@@ -50,7 +50,8 @@ class SessionsNew extends React.Component {
                 type="Email"
                 id="user_email"
                 placeholder="Email"
-                required="true"/>
+                required="true"
+                defaultValue="john@phoenix-trello.com"/>
             </div>
             <div className="field">
               <input
@@ -58,7 +59,8 @@ class SessionsNew extends React.Component {
                 type="password"
                 id="user_password"
                 placeholder="Password"
-                required="true"/>
+                required="true"
+                defaultValue="12345678"/>
             </div>
             <button type="submit">Sign in</button>
           </form>

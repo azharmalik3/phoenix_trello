@@ -1,5 +1,5 @@
 /**
- * Created by azhar on 04/04/16.
+ * Created by azhar on 05/04/16.
  */
 
 import React                from 'react';
@@ -54,9 +54,9 @@ class HomeIndexView extends React.Component {
   _renderBoards(boards) {
     return boards.map((board) => {
       return <BoardCard
-        key={board.id}
-        dispatch={this.props.dispatch}
-        {...board} />;
+                key={board.id}
+                dispatch={this.props.dispatch}
+                {...board} />;
     });
   }
 
@@ -76,7 +76,6 @@ class HomeIndexView extends React.Component {
   _renderOtherBoards() {
     const { invitedBoards } = this.props;
 
-    if (invitedBoards === undefined) return false;
     if (invitedBoards.length === 0) return false;
 
     return (

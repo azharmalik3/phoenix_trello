@@ -1,6 +1,6 @@
 /**
- * Created by azhar on 04/04/16.
- */
+* Created by azhar on 05/04/16.
+*/
 
 import Constants  from '../constants';
 
@@ -20,10 +20,10 @@ const Actions = {
 
       dispatch({ type: Constants.CURRENT_BOARD_FETHING });
 
-      channel.on('member:added', (msg) => {
+      channel.join().receive('ok', (response) => {
         dispatch({
-          type: Constants.CURRENT_BOARD_MEMBER_ADDED,
-          user: msg.user,
+          type: Constants.BOARDS_SET_CURRENT_BOARD,
+          board: response.board,
         });
       });
 
@@ -55,16 +55,47 @@ const Actions = {
         });
       });
 
-      channel.join().receive('ok', (response) => {
+      channel.on('member:added', (msg) => {
+        dispatch({
+          type: Constants.CURRENT_BOARD_MEMBER_ADDED,
+          user: msg.user,
+        });
+      });
+
+      channel.on('card:updated', (msg) => {
         dispatch({
           type: Constants.BOARDS_SET_CURRENT_BOARD,
-          board: response.board,
+          board: msg.board,
         });
 
         dispatch({
-          type: Constants.CURRENT_BOARD_CONNECTED_TO_CHANNEL,
-          channel: channel,
+          type: Constants.CURRENT_CARD_SET,
+          card: msg.card,
         });
+      });
+
+      channel.on('list:updated', (msg) => {
+        dispatch({
+          type: Constants.BOARDS_SET_CURRENT_BOARD,
+          board: msg.board,
+        });
+      });
+
+      channel.on('comment:created', (msg) => {
+        dispatch({
+          type: Constants.BOARDS_SET_CURRENT_BOARD,
+          board: msg.board,
+        });
+
+        dispatch({
+          type: Constants.CURRENT_CARD_SET,
+          card: msg.card,
+        });
+      });
+
+      dispatch({
+        type: Constants.CURRENT_BOARD_CONNECTED_TO_CHANNEL,
+        channel: channel,
       });
     };
   },
@@ -72,6 +103,34 @@ const Actions = {
   leaveChannel: (channel) => {
     return dispatch => {
       channel.leave();
+
+      dispatch({
+        type: Constants.CURRENT_BOARD_RESET,
+      });
+    };
+  },
+
+  addNewMember: (channel, email) => {
+    return dispatch => {
+      channel.push('members:add', { email: email })
+      .receive('error', (data) => {
+        dispatch({
+          type: Constants.CURRENT_BOARD_ADD_MEMBER_ERROR,
+          error: data.error,
+        });
+      });
+    };
+  },
+
+  updateCard: (channel, card) => {
+    return dispatch => {
+      channel.push('card:update', { card: card });
+    };
+  },
+
+  updateList: (channel, list) => {
+    return dispatch => {
+      channel.push('list:update', { list: list });
     };
   },
 
@@ -84,18 +143,23 @@ const Actions = {
     };
   },
 
-  addNewMember: (channel, email) => {
+  editList: (listId) => {
     return dispatch => {
-      channel.push('members:add', { email: email })
-        .receive('error', (data) => {
-          dispatch({
-            type: Constants.CURRENT_BOARD_ADD_MEMBER_ERROR,
-            error: data.error,
-          });
-        });
+      dispatch({
+        type: Constants.CURRENT_BOARD_EDIT_LIST,
+        listId: listId,
+      });
     };
   },
-  // ...
+
+  showCardForm: (listId) => {
+    return dispatch => {
+      dispatch({
+        type: Constants.CURRENT_BOARD_SHOW_CARD_FORM_FOR_LIST,
+        listId: listId,
+      });
+    };
+  },
 };
 
 export default Actions;

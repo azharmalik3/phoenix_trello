@@ -1,13 +1,24 @@
 /**
- * Created by azhar on 04/04/16.
+ * Created by azhar on 05/04/16.
  */
 
 import Constants from '../constants';
 
 const Actions = {
+  showForm: (show) => {
+    return dispatch => {
+      dispatch({
+        type: Constants.LISTS_SHOW_FORM,
+        show: show,
+      });
+    };
+  },
+
   save: (channel, data) => {
     return dispatch => {
-      channel.push('lists:create', { list: data });
+      const topic = data.id ? 'list:update' : 'lists:create';
+
+      channel.push(topic, { list: data });
     };
   },
 

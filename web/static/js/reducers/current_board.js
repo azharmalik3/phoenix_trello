@@ -1,5 +1,5 @@
 /**
- * Created by azhar on 04/04/16.
+ * Created by azhar on 05/04/16.
  */
 
 import Constants  from '../constants';
@@ -50,7 +50,7 @@ export default function reducer(state = initialState, action = {}) {
       lists = state.lists;
       const { card } = action;
 
-    const listIndex = lists.findIndex((list) => { return list.id == card.list_id; });
+      const listIndex = lists.findIndex((list) => { return list.id == card.list_id; });
       lists[listIndex].cards.push(card);
 
       return { ...state, lists: lists };

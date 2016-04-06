@@ -178,7 +178,7 @@ export default class CardModal extends React.Component {
 
     return (
       <div className="card-members">
-        <h5>Members</h5>
+      <h5>Members</h5>
         {memberNodes}
       </div>
     );
@@ -195,7 +195,7 @@ export default class CardModal extends React.Component {
 
     return (
       <div className="card-tags">
-        <h5>Tags</h5>
+      <h5>Tags</h5>
         {tagsNodes}
       </div>
     );

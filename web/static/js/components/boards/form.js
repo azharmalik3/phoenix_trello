@@ -1,10 +1,10 @@
 /**
- * Created by azhar on 04/04/16.
+ * Created by azhar on 05/04/16.
  */
 
 import React, { PropTypes } from 'react';
-import PageClick            from 'react-page-click';
 import Actions              from '../../actions/boards';
+import PageClick            from 'react-page-click';
 import {renderErrorsFor}    from '../../utils';
 
 export default class BoardForm extends React.Component {

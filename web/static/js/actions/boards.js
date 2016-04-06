@@ -1,6 +1,6 @@
 /**
- * Created by azhar on 04/04/16.
- */
+* Created by azhar on 05/04/16.
+*/
 
 import Constants              from '../constants';
 import { push }               from 'react-router-redux';
@@ -13,13 +13,13 @@ const Actions = {
       dispatch({ type: Constants.BOARDS_FETCHING });
 
       httpGet('/api/v1/boards')
-        .then((data) => {
-          dispatch({
-            type: Constants.BOARDS_RECEIVED,
-            ownedBoards: data.owned_boards,
-            invitedBoards: data.invited_boards,
-          });
+      .then((data) => {
+        dispatch({
+          type: Constants.BOARDS_RECEIVED,
+          ownedBoards: data.owned_boards,
+          invitedBoards: data.invited_boards,
         });
+      });
     };
   },
 
@@ -35,23 +35,23 @@ const Actions = {
   create: (data) => {
     return dispatch => {
       httpPost('/api/v1/boards', { board: data })
-        .then((data) => {
-          dispatch({
-            type: Constants.BOARDS_NEW_BOARD_CREATED,
-            board: data,
-          });
-
-          dispatch(push(`/boards/${data.id}`));
-        })
-        .catch((error) => {
-          error.response.json()
-            .then((json) => {
-              dispatch({
-                type: Constants.BOARDS_CREATE_ERROR,
-                errors: json.errors,
-              });
-            });
+      .then((data) => {
+        dispatch({
+          type: Constants.BOARDS_NEW_BOARD_CREATED,
+          board: data,
         });
+
+        dispatch(push(`/boards/${data.id}`));
+      })
+      .catch((error) => {
+        error.response.json()
+        .then((json) => {
+          dispatch({
+            type: Constants.BOARDS_CREATE_ERROR,
+            errors: json.errors,
+          });
+        });
+      });
     };
   },
 

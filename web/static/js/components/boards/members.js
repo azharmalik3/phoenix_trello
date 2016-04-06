@@ -1,9 +1,10 @@
 /**
- * Created by azhar on 04/04/16.
+ * Created by azhar on 05/04/16.
  */
 
 import React, {PropTypes}       from 'react';
 import ReactGravatar            from 'react-gravatar';
+import ReactCSSTransitionGroup  from 'react-addons-css-transition-group';
 import classnames               from 'classnames';
 import PageClick                from 'react-page-click';
 import Actions                  from '../../actions/current_board';
@@ -91,9 +92,19 @@ export default class BoardMembers extends React.Component {
   render() {
     return (
       <ul className="board-users">
-        {::this._renderUsers()}
-        {::this._renderAddNewUser()}
+        <ReactCSSTransitionGroup
+          transitionName="avatar"
+          transitionAppear={true}
+          transitionAppearTimeout={500}
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={300}>
+            {::this._renderUsers()}
+            {::this._renderAddNewUser()}
+        </ReactCSSTransitionGroup>
       </ul>
     );
   }
 }
+
+BoardMembers.propTypes = {
+};

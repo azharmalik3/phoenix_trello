@@ -1,5 +1,5 @@
 /**
- * Created by azhar on 31/03/16.
+ * Created by azhar on 05/04/16.
  */
 
 import React        from 'react';
@@ -36,8 +36,8 @@ export function httpGet(url) {
   return fetch(url, {
     headers: buildHeaders(),
   })
-    .then(checkStatus)
-    .then(parseJSON);
+  .then(checkStatus)
+  .then(parseJSON);
 }
 
 export function httpPost(url, data) {
@@ -48,8 +48,8 @@ export function httpPost(url, data) {
     headers: buildHeaders(),
     body: body,
   })
-    .then(checkStatus)
-    .then(parseJSON);
+  .then(checkStatus)
+  .then(parseJSON);
 }
 
 export function httpDelete(url) {
@@ -59,8 +59,8 @@ export function httpDelete(url) {
     method: 'delete',
     headers: buildHeaders(),
   })
-    .then(checkStatus)
-    .then(parseJSON);
+  .then(checkStatus)
+  .then(parseJSON);
 }
 
 export function setDocumentTitle(title) {
