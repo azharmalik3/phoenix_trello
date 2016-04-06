@@ -4,10 +4,11 @@ defmodule PhoenixTrello.Board do
   alias __MODULE__
   alias PhoenixTrello.{Repo, Permalink, List, Comment, Card, UserBoard, User}
 
-  @derive {Poison.Encoder, only: [:id, :name, :user]}
+  @primary_key {:id, Permalink, autogenerate: true}
 
   schema "boards" do
     field :name, :string
+    field :slug, :string
 
     belongs_to :user, User
     has_many :lists, List
@@ -19,19 +20,10 @@ defmodule PhoenixTrello.Board do
   end
 
   @required_fields ~w(name user_id)
-  @optional_fields ~w()
-
-  def preload_all(query) do
-    comments_query = from c in Comment, order_by: [desc: c.inserted_at], preload: :user
-    cards_query = from c in Card, order_by: c.position, preload: [[comments: ^comments_query], :members]
-    lists_query = from l in List, order_by: l.position, preload: [cards: ^cards_query]
-
-    from b in query, preload: [:user, :members, lists: ^lists_query]
-  end
+  @optional_fields ~w(slug)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
-
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
@@ -44,6 +36,14 @@ defmodule PhoenixTrello.Board do
   def not_owned_by(query \\ %Board{}, user_id) do
     from b in query,
     where: b.user_id != ^user_id
+  end
+
+  def preload_all(query) do
+    comments_query = from c in Comment, order_by: [desc: c.inserted_at], preload: :user
+    cards_query = from c in Card, order_by: c.position, preload: [[comments: ^comments_query], :members]
+    lists_query = from l in List, order_by: l.position, preload: [cards: ^cards_query]
+
+    from b in query, preload: [:user, :members, lists: ^lists_query]
   end
 
   def slug_id(board) do
