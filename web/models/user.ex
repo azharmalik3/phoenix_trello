@@ -1,6 +1,8 @@
 defmodule PhoenixTrello.User do
   use PhoenixTrello.Web, :model
 
+  alias PhoenixTrello.{Board, UserBoard}
+
   @derive {Poison.Encoder, only: [:id, :first_name, :last_name, :email]}
 
   schema "users" do
