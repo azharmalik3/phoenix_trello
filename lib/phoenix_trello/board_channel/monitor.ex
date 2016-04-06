@@ -14,7 +14,7 @@ defmodule PhoenixTrello.BoardChannel.Monitor do
     end
   end
 
-  def start_link(initial_state) do
+  def start_link(board_id) do
     GenServer.start_link(__MODULE__, [], name: ref(board_id))
   end
 
