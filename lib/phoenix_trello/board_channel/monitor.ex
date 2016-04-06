@@ -1,45 +1,65 @@
 defmodule PhoenixTrello.BoardChannel.Monitor do
   use GenServer
 
+  ###############
+  # API Calls
+  ###############
+
+  def create(board_id) do
+    case GenServer.whereis(ref(board_id)) do
+      nil ->
+        Supervisor.start_child(PhoenixTrello.BoardChannel.Supervisor, [board_id])
+      _board ->
+        {:error, :board_already_exists}
+    end
+  end
+
   def start_link(initial_state) do
-    GenServer.start_link(__MODULE__, initial_state, name: __MODULE__)
+    GenServer.start_link(__MODULE__, [], name: ref(board_id))
   end
 
-  def member_joined(board, member) do
-    GenServer.call(__MODULE__, {:member_joined, board, member})
+  def user_joined(board_id, user) do
+    try_call board_id, {:user_joined, user}
   end
 
-  def member_left(board, member) do
-    GenServer.call(__MODULE__, {:member_left, board, member})
+  def users_in_board(board_id) do
+    try_call board_id, {:users_in_board}
+  end
+
+  def user_left(board_id, user) do
+    try_call board_id, {:user_left, user}
   end
 
   ##################
   # Server callbacks
   ##################
 
-  def handle_call({:member_left, board, member}, _from, state) do
-    new_members = state
-      |> Map.get(board)
-      |> List.delete(member)
+  def handle_call({:user_joined, user}, _from, users) do
+    users = [user] ++ users
+      |> Enum.uniq
 
-    state = state
-      |> Map.update!(board, fn(_) -> new_members end)
-
-    {:reply, new_members, state}
+    {:reply, users, users}
   end
 
-  def handle_call({:member_joined, board, member}, _from, state) do
-    state = case Map.get(state, board) do
+  def handle_call({:users_in_board}, _from, users) do
+    { :reply, users, users }
+  end
+
+  def handle_call({:user_left, user}, _from, users) do
+    users = List.delete(users, user)
+    {:reply, users, users}
+  end
+
+  defp ref(board_id) do
+    {:global, {:board, board_id}}
+  end
+
+  defp try_call(board_id, call_function) do
+    case GenServer.whereis(ref(board_id)) do
       nil ->
-        state = state
-        |> Map.put(board, [member])
-
-        {:reply, [member], state}
-      members ->
-        state = state
-        |> Map.put(board, Enum.uniq([member | members]))
-
-        {:reply, Map.get(state, board), state}
+        {:error, :invalid_board}
+      board ->
+        GenServer.call(board, call_function)
     end
   end
 end
